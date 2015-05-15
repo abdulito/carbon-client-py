@@ -62,6 +62,10 @@ class Endpoint(object):
         return self._client.request_endpoint(self, "POST", data=data, options=options)
 
     ####################################################################################################################
+    def delete(self):
+        return self._client.request_endpoint(self, "DELETE")
+
+    ####################################################################################################################
     def _new_endpoint(self, path):
         return Endpoint(path, parent=self, client=self.client)
 
