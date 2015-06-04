@@ -113,7 +113,7 @@ class Collection(Endpoint):
     ####################################################################################################################
     def remove_object(self, _id):
 
-        return self._get_object_endpoint(id).delete()
+        return self._get_object_endpoint(_id).delete()
 
     ####################################################################################################################
     def get_object(self, _id):
