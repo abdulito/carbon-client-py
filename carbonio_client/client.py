@@ -6,11 +6,11 @@ from netutils import fetch_url_json
 
 
 ########################################################################################################################
-# Generic Carbon Client
+# Generic Carbon IO Client
 ########################################################################################################################
 
 
-class CarbonClient(Endpoint):
+class CarbonIOClient(Endpoint):
 
     ####################################################################################################################
     def __init__(self, url):
@@ -29,6 +29,7 @@ class CarbonClient(Endpoint):
     def request_endpoint(self, endpoint, method, params=None, data=None, options=None):
         return send_request(endpoint.full_url, method=method,
                             params=params, data=data, options=options)
+
 ########################################################################################################################
 # HELPERS
 ########################################################################################################################
@@ -55,5 +56,5 @@ def append_params_to_url(url, params):
 ###############################################################################
 # CarbonClientError
 ###############################################################################
-class CarbonClientError(Exception):
+class CarbonIOClientError(Exception):
     pass

@@ -1,8 +1,8 @@
 __author__ = 'abdul'
 
-from carbon_client.client import CarbonClient
+from carbonio_client.client import CarbonIOClient
 
-client = CarbonClient("http://localhost:8888")
+client = CarbonIOClient("http://localhost:8888")
 ep = client.get_endpoint("hello")
 
 print ep.get()
