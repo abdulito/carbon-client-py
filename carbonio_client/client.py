@@ -34,9 +34,9 @@ class CarbonIOClient(Endpoint):
 # HELPERS
 ########################################################################################################################
 
-def send_request(url, params=None, data=None, method=None, options=None):
+def send_request(url, params=None, data=None, method=None, headers=None, options=None):
     url = append_params_to_url(url, params)
-    return fetch_url_json(url=url, method=method, data=data)
+    return fetch_url_json(url=url, method=method, data=data, headers=headers)
 
 ########################################################################################################################
 def append_params_to_url(url, params):
