@@ -13,10 +13,11 @@ from netutils import fetch_url_json
 class CarbonIOClient(Endpoint):
 
     ####################################################################################################################
-    def __init__(self, url):
+    def __init__(self, url, auth_headers=None):
         Endpoint.__init__(self, None)
         self._url = url
         self._client = self
+        self._auth_headers = auth_headers
 
     ####################################################################################################################
     @property
@@ -28,7 +29,8 @@ class CarbonIOClient(Endpoint):
     ####################################################################################################################
     def request_endpoint(self, endpoint, method, params=None, data=None, options=None):
         return send_request(endpoint.full_url, method=method,
-                            params=params, data=data, options=options)
+                            params=params, data=data, options=options,
+                            headers=self._auth_headers)
 
 ########################################################################################################################
 # HELPERS
