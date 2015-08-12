@@ -2,7 +2,7 @@ __author__ = 'abdul'
 
 from endpoint import Endpoint
 from netutils import fetch_url_json
-
+import urllib
 
 
 ########################################################################################################################
@@ -46,9 +46,11 @@ def append_params_to_url(url, params):
         url += "?"
         count = 0
         for name, val in params.items():
+            if val is None:
+                val = ""
             if count > 0:
                 url += "&"
-            url += "%s=%s" % (name, val)
+            url += "%s=%s" % (name, urllib.quote(val))
             count += 1
     return url
 

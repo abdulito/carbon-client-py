@@ -1,6 +1,6 @@
 __author__ = 'abdul'
 
-
+import json
 
 ########################################################################################################################
 # Carbon Endpoint
@@ -103,9 +103,10 @@ class Collection(Endpoint):
 
     ####################################################################################################################
     def find(self, query=None, options=None):
+        query = query or {}
         return self.get(
             params={
-                "q": query,
+                "query": json.dumps(query),
                 "options": options
             }
         )
