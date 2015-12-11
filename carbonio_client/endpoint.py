@@ -1,7 +1,7 @@
 __author__ = 'abdul'
 
 import json
-
+from utils import dict_deep_merge
 ########################################################################################################################
 # Carbon Endpoint
 ########################################################################################################################
@@ -61,15 +61,21 @@ class Endpoint(object):
     ####################################################################################################################
 
     def get(self, params=None, options=None):
-        return self._client.request_endpoint(self, "GET", params=params, options=options)
+        options = options or {}
+        if params:
+            if options.get("params"):
+                options["params"] = dict_deep_merge(options["params"], params.copy())
+            else:
+                options["params"] = params
+        return self._client.request_endpoint(self, "GET", options=options)
 
     ####################################################################################################################
-    def post(self, data=None, options=None):
-        return self._client.request_endpoint(self, "POST", data=data, options=options)
+    def post(self, body=None, options=None):
+        return self._client.request_endpoint(self, "POST", body=body, options=options)
 
     ####################################################################################################################
-    def put(self, data=None, options=None):
-        return self._client.request_endpoint(self, "PUT", data=data, options=options)
+    def put(self, body=None, options=None):
+        return self._client.request_endpoint(self, "PUT", body=body, options=options)
 
     ####################################################################################################################
     def delete(self):
@@ -99,7 +105,7 @@ class Collection(Endpoint):
 
     ####################################################################################################################
     def insert(self, obj):
-        return self.post(data=obj)
+        return self.post(body=obj)
 
     ####################################################################################################################
     def find(self, query=None, options=None):
@@ -123,7 +129,7 @@ class Collection(Endpoint):
     ####################################################################################################################
     def update(self, query, obj, options=None):
         return self.put(
-            data={
+            body={
                 "q": query,
                 "o": obj
             }
@@ -132,7 +138,7 @@ class Collection(Endpoint):
     ####################################################################################################################
     def update_object(self, _id, obj):
         return self._get_object_endpoint(_id).put(
-            data={
+            body={
                 "o": obj
             }
         )
