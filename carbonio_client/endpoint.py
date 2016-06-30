@@ -99,7 +99,7 @@ class Collection(Endpoint):
         super(Collection, self).__init__(path, parent=parent, client=client)
 
     ####################################################################################################################
-    def _get_object_endpoint(self, _id):
+    def _object_endpoint(self, _id):
         return self.get_endpoint(str(_id))
 
     ####################################################################################################################
@@ -117,13 +117,13 @@ class Collection(Endpoint):
         )
 
     ####################################################################################################################
-    def remove_object(self, _id):
+    def delete_object(self, _id):
 
-        return self._get_object_endpoint(_id).delete()
+        return self._object_endpoint(_id).delete()
 
     ####################################################################################################################
-    def get_object(self, _id):
-        return self._get_object_endpoint(_id).get()
+    def find_object(self, _id):
+        return self._object_endpoint(_id).get()
 
     ####################################################################################################################
     def update(self, query, obj, options=None):
@@ -136,7 +136,7 @@ class Collection(Endpoint):
 
     ####################################################################################################################
     def update_object(self, _id, obj):
-        return self._get_object_endpoint(_id).put(
+        return self._object_endpoint(_id).put(
             body={
                 "o": obj
             }
