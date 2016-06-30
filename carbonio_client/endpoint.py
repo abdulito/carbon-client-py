@@ -100,8 +100,7 @@ class Collection(Endpoint):
 
     ####################################################################################################################
     def _get_object_endpoint(self, _id):
-        # TODO XXX had to pass the id as a string to deal with a bug in objectserver
-        return self.get_endpoint('"%s"' % _id)
+        return self.get_endpoint(str(_id))
 
     ####################################################################################################################
     def insert(self, obj):
