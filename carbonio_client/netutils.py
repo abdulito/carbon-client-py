@@ -1,30 +1,39 @@
 import httplib2
 import json
-
-###############################################################################
+import urlparse
+########################################################################################################################
 # curl functionality
-###############################################################################
+########################################################################################################################
 
-def get_url_json(url, headers=None, timeout=None, retries=0):
-    return fetch_url_json(url, method="GET", headers=headers, timeout=timeout, retries=retries)
+def get_url_json(url, headers=None, timeout=None, retries=0, keyfile=None, certfile=None):
+    return fetch_url_json(url, method="GET", headers=headers, timeout=timeout, retries=retries,
+                          keyfile=keyfile, certfile=certfile)
 
-def post_url_json(url, data, headers=None, timeout=None, retries=0):
-    return fetch_url_json(url, method="POST", data=data, headers=headers, timeout=timeout, retries=retries)
+########################################################################################################################
+def post_url_json(url, data, headers=None, timeout=None, retries=0, keyfile=None, certfile=None):
+    return fetch_url_json(url, method="POST", data=data, headers=headers, timeout=timeout, retries=retries,
+                          keyfile=keyfile, certfile=certfile)
 
-def fetch_url_json(url, method=None, data=None, headers=None, timeout=None, retries=None):
+########################################################################################################################
+def fetch_url_json(url, method=None, data=None, headers=None, timeout=None, retries=None, keyfile=None, certfile=None):
     if not headers:
         headers = {}
     headers["Content-Type"] = "application/json"
     if data and isinstance(data, dict):
         data = json.dumps(data)
-    result = fetch_url(url, method=method, data=data, headers=headers, timeout=timeout, retries=retries)
+    result = fetch_url(url, method=method, data=data, headers=headers, timeout=timeout, retries=retries,
+                       keyfile=keyfile, certfile=certfile)
     if result and not isinstance(result, bool):
         return json.loads(result)
     else:
         return result
 
-def fetch_url(url, method=None, data=None, headers=None, timeout=None, retries=None):
+########################################################################################################################
+def fetch_url(url, method=None, data=None, headers=None, timeout=None, retries=None, keyfile=None, certfile=None):
     http = httplib2.Http(timeout=timeout)
+    if keyfile:
+        http.add_certificate(keyfile, certfile, urlparse.urlparse(url).netloc)
+
     retries = retries or 0
     _response = None
     _content = None
@@ -47,6 +56,7 @@ def fetch_url(url, method=None, data=None, headers=None, timeout=None, retries=N
     else:
         return True
 
+########################################################################################################################
 
 
 

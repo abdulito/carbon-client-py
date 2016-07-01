@@ -76,9 +76,12 @@ class CarbonIOClient(Endpoint):
 def send_request(url, method=None, body=None, options=None):
     params = options and options.get("params")
     headers = options and options.get("headers")
+    keyfile = options and options.get("keyfile")
+    certfile = options and options.get("certfile")
 
     url = append_params_to_url(url, params)
-    return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=10*60)
+    return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=10*60, keyfile=keyfile,
+                          certfile=certfile)
 
 ########################################################################################################################
 def append_params_to_url(url, params):
