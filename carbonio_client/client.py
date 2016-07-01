@@ -78,11 +78,11 @@ def send_request(url, method=None, body=None, options=None):
     headers = options and options.get("headers")
     keyfile = options and options.get("keyfile")
     certfile = options and options.get("certfile")
-    cacerts = options and options.get("cacerts")
+    ca_certs = options and options.get("ca_certs")
 
     url = append_params_to_url(url, params)
     return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=10*60, keyfile=keyfile,
-                          certfile=certfile, cacerts=cacerts)
+                          certfile=certfile, ca_certs=ca_certs)
 
 ########################################################################################################################
 def append_params_to_url(url, params):

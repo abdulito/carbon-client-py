@@ -6,26 +6,26 @@ import urlparse
 # curl functionality
 ########################################################################################################################
 
-def get_url_json(url, headers=None, timeout=None, retries=0, keyfile=None, certfile=None, cacerts=None):
+def get_url_json(url, headers=None, timeout=None, retries=0, keyfile=None, certfile=None, ca_certs=None):
     return fetch_url_json(url, method="GET", headers=headers, timeout=timeout, retries=retries,
-                          keyfile=keyfile, certfile=certfile, cacerts=cacerts)
+                          keyfile=keyfile, certfile=certfile, ca_certs=ca_certs)
 
 ########################################################################################################################
 def post_url_json(url, data, headers=None, timeout=None, retries=0, keyfile=None, certfile=None,
-                  cacerts=None):
+                  ca_certs=None):
     return fetch_url_json(url, method="POST", data=data, headers=headers, timeout=timeout, retries=retries,
-                          keyfile=keyfile, certfile=certfile, cacerts=cacerts)
+                          keyfile=keyfile, certfile=certfile, ca_certs=ca_certs)
 
 ########################################################################################################################
 def fetch_url_json(url, method=None, data=None, headers=None, timeout=None, retries=None, keyfile=None, certfile=None,
-                   cacerts=None):
+                   ca_certs=None):
     if not headers:
         headers = {}
     headers["Content-Type"] = "application/json"
     if data and isinstance(data, dict):
         data = json.dumps(data)
     result = fetch_url(url, method=method, data=data, headers=headers, timeout=timeout, retries=retries,
-                       keyfile=keyfile, certfile=certfile, cacerts=cacerts)
+                       keyfile=keyfile, certfile=certfile, ca_certs=ca_certs)
     if result and not isinstance(result, bool):
         return json.loads(result)
     else:
@@ -33,8 +33,8 @@ def fetch_url_json(url, method=None, data=None, headers=None, timeout=None, retr
 
 ########################################################################################################################
 def fetch_url(url, method=None, data=None, headers=None, timeout=None, retries=None, keyfile=None, certfile=None,
-              cacerts=None):
-    http = httplib2.Http(timeout=timeout, cacerts=cacerts)
+              ca_certs=None):
+    http = httplib2.Http(timeout=timeout, ca_certs=ca_certs)
 
     if keyfile:
         http.add_certificate(keyfile, certfile, urlparse.urlparse(url).netloc)
