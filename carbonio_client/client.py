@@ -73,15 +73,15 @@ class CarbonIOClient(Endpoint):
 # HELPERS
 ########################################################################################################################
 
-def send_request(url, method=None, body=None, options=None):
+def send_request(url, method=None, body=None, options=None, timeout=None):
     params = options and options.get("params")
     headers = options and options.get("headers")
     keyfile = options and options.get("keyfile")
     certfile = options and options.get("certfile")
     ca_certs = options and options.get("ca_certs")
-
+    timeout = timeout or 30
     url = append_params_to_url(url, params)
-    return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=10*60, keyfile=keyfile,
+    return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=timeout, keyfile=keyfile,
                           certfile=certfile, ca_certs=ca_certs)
 
 ########################################################################################################################
