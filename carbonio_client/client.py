@@ -1,12 +1,13 @@
 __author__ = 'abdul'
 
 from endpoint import Endpoint
-from netutils import fetch_url_json
+from netutils import fetch_url_json, FetchUrlError
 from utils import dict_deep_merge
 import urllib
 
 import requests
 import ssl
+import json
 
 from requests_toolbelt import SSLAdapter
 
@@ -58,6 +59,8 @@ class CarbonIOClient(Endpoint):
         url = append_params_to_url(url, params)
 
         headers = options and options.get("headers")
+        headers = headers or {}
+        headers["Content-Type"] = "application/json"
         keyfile = options and options.get("keyfile")
         certfile = options and options.get("certfile")
         ca_certs = options and options.get("ca_certs")
@@ -65,7 +68,14 @@ class CarbonIOClient(Endpoint):
         if keyfile:
             cert = (certfile, keyfile)
 
-        return method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert).json()
+        if body and isinstance(body, dict):
+            body = json.dumps(body)
+
+        response = method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise FetchUrlError("Error (%s): %s" % (response.status_code, response.json()))
 
     ####################################################################################################################
     def _setup_authentication(self, authentication):
