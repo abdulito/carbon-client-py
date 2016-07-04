@@ -2,10 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='carbonio_client',
-    version='0.0.7',
+    version='0.0.8',
     packages=find_packages(),
     install_requires=[
-        'httplib2>=0.9'
+        'httplib2>=0.9',
+        'requests==2.9.1'
     ]
 
 

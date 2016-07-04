@@ -5,6 +5,10 @@ from netutils import fetch_url_json
 from utils import dict_deep_merge
 import urllib
 
+import requests
+import ssl
+
+from requests_toolbelt import SSLAdapter
 
 ########################################################################################################################
 # Generic Carbon IO Client
@@ -19,6 +23,7 @@ class CarbonIOClient(Endpoint):
         self._url = url
         self._client = self
         self.default_options = options or {}
+        self._session = None
         # setup authenticator
         if "authentication" in self.default_options:
             self._setup_authentication(self.default_options["authentication"])
@@ -28,12 +33,39 @@ class CarbonIOClient(Endpoint):
     def url(self):
         return self._url
 
+    def session(self):
+        if self._session is None:
+            self._session = requests.Session()
+            if self.default_options and "keyfile" in self.default_options:
+                self._session.mount('https://', SSLAdapter(ssl.PROTOCOL_TLSv1))
+
+        return self._session
+
     ####################################################################################################################
     # CLIENT METHODS
     ####################################################################################################################
     def request_endpoint(self, endpoint, method, body=None, options=None):
         options = self._apply_default_options(options)
-        return send_request(endpoint.full_url, method=method, body=body, options=options)
+        #return send_request(endpoint.full_url, method=method, body=body, options=options)
+        return self.do_request_endpoint(endpoint, method, body=body, options=options)
+    ####################################################################################################################
+    def do_request_endpoint(self, endpoint, method, body=None, options=None):
+        method_func = getattr(self.session(), method.lower())
+
+        params = options and options.get("params")
+        timeout = options.get("timeout") or 10
+        url = endpoint.full_url
+        url = append_params_to_url(url, params)
+
+        headers = options and options.get("headers")
+        keyfile = options and options.get("keyfile")
+        certfile = options and options.get("certfile")
+        ca_certs = options and options.get("ca_certs")
+        cert = None
+        if keyfile:
+            cert = (certfile, keyfile)
+
+        return method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert).json()
 
     ####################################################################################################################
     def _setup_authentication(self, authentication):
