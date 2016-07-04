@@ -8,8 +8,17 @@ import urllib
 import requests
 import ssl
 import json
+import logging
 
 from requests_toolbelt import SSLAdapter
+
+
+########################################################################################################################
+# LOGGER
+########################################################################################################################
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.NullHandler())
 
 ########################################################################################################################
 # Generic Carbon IO Client
@@ -73,7 +82,11 @@ class CarbonIOClient(Endpoint):
 
         response = method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert)
         if response.status_code == 200:
-            return response.json()
+            try:
+                return response.json()
+            except Exception, ex:
+                logger.error("Failed to parse response to json. Raw response:\n****%s\n******" % response.text)
+                raise
         else:
             raise FetchUrlError("Error (%s): %s" % (response.status_code, response.json()))
 
