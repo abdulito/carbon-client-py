@@ -88,7 +88,7 @@ class CarbonIOClient(Endpoint):
                 logger.error("Failed to parse response to json. Raw response:\n****%s\n******" % response.text)
                 raise
         else:
-            raise FetchUrlError("Error (%s): %s" % (response.status_code, response.json()),
+            raise FetchUrlError("Error (%s): %s" % (response.status_code, response.text),
                                 status_code=response.status_code)
 
     ####################################################################################################################
