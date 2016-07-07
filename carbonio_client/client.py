@@ -81,7 +81,7 @@ class CarbonIOClient(Endpoint):
             body = json.dumps(body)
 
         response = method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert)
-        if response.status_code == 200:
+        if response.status_code < 400:
             try:
                 return response.json()
             except Exception, ex:
