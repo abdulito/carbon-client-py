@@ -11,14 +11,20 @@ import json
 import logging
 
 from requests_toolbelt import SSLAdapter
-
-
+import urllib3.connection
+import socket
 ########################################################################################################################
 # LOGGER
 ########################################################################################################################
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+########################################################################################################################
+# Defaulting SO_KEEPALIVE for all http connections
+urllib3.connection.HTTPConnection.default_socket_options.extend([
+    (socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+])
 
 ########################################################################################################################
 # Generic Carbon IO Client
