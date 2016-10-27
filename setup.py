@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'httplib2>=0.9',
-        'requests==2.9.1'
+        'requests==2.11.1'
     ]
 
 
