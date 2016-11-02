@@ -13,6 +13,8 @@ import logging
 from requests_toolbelt import SSLAdapter
 import requests.packages.urllib3.connection
 import socket
+import time
+
 ########################################################################################################################
 # LOGGER
 ########################################################################################################################
@@ -40,6 +42,7 @@ class CarbonIOClient(Endpoint):
         self._client = self
         self.default_options = options or {}
         self._session = None
+        self.persist_session = True
         # setup authenticator
         if "authentication" in self.default_options:
             self._setup_authentication(self.default_options["authentication"])
@@ -49,21 +52,38 @@ class CarbonIOClient(Endpoint):
     def url(self):
         return self._url
 
+    ####################################################################################################################
     def session(self):
-        if self._session is None:
-            self._session = requests.Session()
-            if self.default_options and "keyfile" in self.default_options:
-                self._session.mount('https://', SSLAdapter(ssl.PROTOCOL_TLSv1))
 
-        return self._session
+        if not self.persist_session:
+            return self._new_session()
+        else:
+            if self._session is None:
+                self._session = self._new_session()
+            return self._session
+
+    ####################################################################################################################
+    def _new_session(self):
+        session = requests.Session()
+        if self.default_options and "keyfile" in self.default_options:
+            session.mount('https://', SSLAdapter(ssl.PROTOCOL_TLSv1))
+
+        return session
 
     ####################################################################################################################
     # CLIENT METHODS
     ####################################################################################################################
     def request_endpoint(self, endpoint, method, body=None, options=None):
         options = self._apply_default_options(options)
-        #return send_request(endpoint.full_url, method=method, body=body, options=options)
-        return self.do_request_endpoint(endpoint, method, body=body, options=options)
+        start_time = time.time()
+        try:
+            return self.do_request_endpoint(endpoint, method, body=body, options=options)
+        except:
+            raise
+        finally:
+            elapsed = time.time() - start_time
+            logger.info("CarbonClient: %s %s finished in %.3f seconds" % (method, endpoint.full_url, elapsed))
+
     ####################################################################################################################
     def do_request_endpoint(self, endpoint, method, body=None, options=None):
         method_func = getattr(self.session(), method.lower())
