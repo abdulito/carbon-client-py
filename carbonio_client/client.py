@@ -3,7 +3,6 @@ __author__ = 'abdul'
 from endpoint import Endpoint
 
 from utils import dict_deep_merge
-import urllib
 
 import requests
 import ssl
