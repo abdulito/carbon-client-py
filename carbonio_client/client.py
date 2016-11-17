@@ -95,6 +95,7 @@ class CarbonIOClient(Endpoint):
         url = endpoint.full_url
         headers = options and options.get("headers")
         headers = headers or {}
+        # TODO XXX we should not always default content type
         headers["Content-Type"] = "application/json"
         keyfile = options and options.get("keyfile")
         certfile = options and options.get("certfile")
@@ -102,8 +103,8 @@ class CarbonIOClient(Endpoint):
         cert = None
         if keyfile:
             cert = (certfile, keyfile)
-
-        if body and isinstance(body, dict):
+        body = body or {}
+        if body is not None and isinstance(body, dict):
             body = json.dumps(body)
 
         response = method_func(url, params=params, data=body, headers=headers, timeout=timeout,
