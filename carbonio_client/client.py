@@ -1,7 +1,7 @@
 __author__ = 'abdul'
 
 from endpoint import Endpoint
-from netutils import fetch_url_json, FetchUrlError
+
 from utils import dict_deep_merge
 import urllib
 
@@ -91,8 +91,6 @@ class CarbonIOClient(Endpoint):
         params = options and options.get("params")
         timeout = options.get("timeout") or 10
         url = endpoint.full_url
-        url = append_params_to_url(url, params)
-
         headers = options and options.get("headers")
         headers = headers or {}
         headers["Content-Type"] = "application/json"
@@ -106,7 +104,8 @@ class CarbonIOClient(Endpoint):
         if body and isinstance(body, dict):
             body = json.dumps(body)
 
-        response = method_func(url, data=body, headers=headers, timeout=timeout, verify=ca_certs, cert=cert)
+        response = method_func(url, params=params, data=body, headers=headers, timeout=timeout,
+                               verify=ca_certs, cert=cert)
         if response.status_code < 400:
             try:
                 return response.json()
@@ -114,8 +113,7 @@ class CarbonIOClient(Endpoint):
                 logger.error("Failed to parse response to json. Raw response:\n****%s\n******" % response.text)
                 raise
         else:
-            raise FetchUrlError("Error (%s): %s" % (response.status_code, response.text),
-                                status_code=response.status_code)
+            raise requests.HTTPError("Error (%s): %s" % (response.status_code, response.text), response=response)
 
     ####################################################################################################################
     def _setup_authentication(self, authentication):
@@ -148,45 +146,6 @@ class CarbonIOClient(Endpoint):
             return dict_deep_merge(options, self.default_options.copy())
         else:
             return options
-
-
-########################################################################################################################
-# HELPERS
-########################################################################################################################
-
-def send_request(url, method=None, body=None, options=None):
-    params = options and options.get("params")
-    headers = options and options.get("headers")
-    keyfile = options and options.get("keyfile")
-    certfile = options and options.get("certfile")
-    ca_certs = options and options.get("ca_certs")
-    timeout = options.get("timeout") or 10
-    url = append_params_to_url(url, params)
-    return fetch_url_json(url=url, method=method, data=body, headers=headers, timeout=timeout, keyfile=keyfile,
-                          certfile=certfile, ca_certs=ca_certs)
-
-########################################################################################################################
-def append_params_to_url(url, params):
-    if params:
-        url += "?"
-        count = 0
-        for name, val in params.items():
-            if val is None:
-                val = ""
-            if count > 0:
-                url += "&"
-            url += "%s=%s" % (name, urllib.quote(val))
-            count += 1
-    return url
-
-########################################################################################################################
-
-
-###############################################################################
-# CarbonClientError
-###############################################################################
-class CarbonIOClientError(Exception):
-    pass
 
 
 
