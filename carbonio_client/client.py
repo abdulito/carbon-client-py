@@ -15,6 +15,9 @@ import requests.packages.urllib3.connection
 import socket
 import time
 
+# bind HTTPError as requests HTTPError
+from requests import HTTPError as HTTPError
+
 ########################################################################################################################
 # LOGGER
 ########################################################################################################################
@@ -113,7 +116,7 @@ class CarbonIOClient(Endpoint):
                 logger.error("Failed to parse response to json. Raw response:\n****%s\n******" % response.text)
                 raise
         else:
-            raise requests.HTTPError("Error (%s): %s" % (response.status_code, response.text), response=response)
+            raise HTTPError("Error (%s): %s" % (response.status_code, response.text), response=response)
 
     ####################################################################################################################
     def _setup_authentication(self, authentication):
