@@ -104,7 +104,7 @@ class Collection(Endpoint):
 
     ####################################################################################################################
     def insert(self, obj):
-        return self.post(body=obj)
+        return self.post(body=obj).json()
 
     ####################################################################################################################
     def find(self, query=None, options=None):
@@ -114,16 +114,16 @@ class Collection(Endpoint):
                 "query": json.dumps(query),
                 "options": options
             }
-        )
+        ).json()
 
     ####################################################################################################################
     def delete_object(self, _id):
 
-        return self._object_endpoint(_id).delete()
+        return self._object_endpoint(_id).delete().json()
 
     ####################################################################################################################
     def find_object(self, _id):
-        return self._object_endpoint(_id).get()
+        return self._object_endpoint(_id).get().json()
 
     ####################################################################################################################
     def update(self, query, obj, options=None):
@@ -132,7 +132,7 @@ class Collection(Endpoint):
                 "q": query,
                 "o": obj
             }
-        )
+        ).json()
 
     ####################################################################################################################
     def update_object(self, _id, obj):
@@ -140,4 +140,4 @@ class Collection(Endpoint):
             body={
                 "o": obj
             }
-        )
+        ).json()

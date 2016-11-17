@@ -110,11 +110,7 @@ class CarbonIOClient(Endpoint):
         response = method_func(url, params=params, data=body, headers=headers, timeout=timeout,
                                verify=ca_certs, cert=cert)
         if response.status_code < 400:
-            try:
-                return response.json()
-            except Exception, ex:
-                logger.error("Failed to parse response to json. Raw response:\n****%s\n******" % response.text)
-                raise
+            return response
         else:
             raise HTTPError("Error (%s): %s" % (response.status_code, response.text), response=response)
 
