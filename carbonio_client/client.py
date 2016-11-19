@@ -103,7 +103,7 @@ class CarbonIOClient(Endpoint):
         cert = None
         if keyfile:
             cert = (certfile, keyfile)
-        body = body or {}
+
         if body is not None and isinstance(body, dict):
             body = json.dumps(body)
 
