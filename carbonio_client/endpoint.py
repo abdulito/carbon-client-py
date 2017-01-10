@@ -42,7 +42,10 @@ class Endpoint(object):
     ####################################################################################################################
     @property
     def full_url(self):
-        return self.client.url + "/" + self.absolute_path
+        if self == self.client:
+            return self.client.url
+        else:
+            return self.client.url + "/" + self.absolute_path
 
     ####################################################################################################################
     def get_endpoint(self, path):

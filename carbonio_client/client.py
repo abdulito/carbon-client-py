@@ -39,7 +39,7 @@ class CarbonIOClient(Endpoint):
 
     ####################################################################################################################
     def __init__(self, url, options=None):
-        Endpoint.__init__(self, None)
+        Endpoint.__init__(self, "")
         self._url = url
         self._client = self
         self.default_options = options or {}
