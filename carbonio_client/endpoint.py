@@ -81,8 +81,14 @@ class Endpoint(object):
         return self._client.request_endpoint(self, "PUT", body=body, options=options)
 
     ####################################################################################################################
-    def delete(self):
-        return self._client.request_endpoint(self, "DELETE")
+    def delete(self, params=None, options=None):
+        options = options or {}
+        if params:
+            if options.get("params"):
+                options["params"] = dict_deep_merge(options["params"], params.copy())
+            else:
+                options["params"] = params
+        return self._client.request_endpoint(self, "DELETE", options=options)
 
     ####################################################################################################################
     def _new_endpoint(self, path, clazz=None):
