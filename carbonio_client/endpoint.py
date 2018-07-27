@@ -81,6 +81,10 @@ class Endpoint(object):
         return self._client.request_endpoint(self, "PUT", body=body, options=options)
 
     ####################################################################################################################
+    def patch(self, body=None, options=None):
+        return self._client.request_endpoint(self, "PATCH", body=body, options=options)
+
+    ####################################################################################################################
     def delete(self, params=None, options=None):
         options = options or {}
         if params:
